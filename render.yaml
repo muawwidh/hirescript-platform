@@ -21,9 +21,6 @@ services:
     startCommand: npm run start
     envVars:
       - key: HIRESCRIPT_API_BASE_URL
-        fromService:
-          type: web
-          name: hirescript-java-api
-          property: hostport
+        value: https://hirescript-java-api.onrender.com
       - key: HIRESCRIPT_API_TIMEOUT_MS
         value: "30000"
