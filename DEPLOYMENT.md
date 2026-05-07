@@ -1,9 +1,9 @@
 # HireScript Deployment
 
-This workspace is set up as two deployable services:
+This repo now deploys only the frontend. The Java backend should be deployed separately by the backend owner.
 
 ```text
-frontend -> backend-java -> hosted Python AI API
+frontend -> externally deployed Java backend -> hosted Python AI API
 ```
 
 The hosted Python API base URL is:
@@ -12,38 +12,15 @@ The hosted Python API base URL is:
 https://hirescript-api-python.onrender.com
 ```
 
-## Backend Java Service
+## Java Backend
 
-Deploy `backend-java` as a Spring Boot web service.
-
-Recommended service settings if you create it manually:
+The Java backend is not deployed from this frontend repo. Ask the backend owner for the deployed Java base URL, then verify its health endpoint:
 
 ```text
-Root directory: backend-java
-Runtime: Docker
-Dockerfile path: ./Dockerfile
-```
-
-Required environment variables:
-
-```env
-SPRING_PROFILES_ACTIVE=ai
-PYTHON_API_BASE_URL=https://hirescript-api-python.onrender.com
-PYTHON_API_INTERNAL_SECRET=replace-with-python-internal-secret
-```
-
-The `ai` profile calls the hosted Python API and skips database persistence. That keeps the first deployment simple while preserving the public Java API contract.
-
-After deployment, verify:
-
-```text
-GET https://your-java-backend-url/api/health
-POST https://your-java-backend-url/api/jd/generate
+GET https://their-java-backend-url/api/health
 ```
 
 ## Frontend Service
-
-Deploy this frontend after the Java backend is live.
 
 Required environment variables:
 
@@ -56,29 +33,17 @@ The frontend browser submits to its own `/api/jd/generate` route. That server ro
 
 ## Render Blueprint
 
-This repo includes `render.yaml`, which can create both Render services from the same repo.
+This repo includes `render.yaml`, which creates only the frontend service.
 
-When Render asks for the unsynced secret, enter:
+When Render asks for the unsynced env var, enter your friend's deployed Java backend base URL:
 
 ```env
-PYTHON_API_INTERNAL_SECRET=dev-secret-123
+HIRESCRIPT_API_BASE_URL=https://your-java-backend-url
 ```
-
-The blueprint passes the Java service's private `host:port` to the frontend as `HIRESCRIPT_API_BASE_URL`.
 
 ## Local Run
 
-Run Java:
-
-```bash
-cd backend-java
-SPRING_PROFILES_ACTIVE=ai \
-PYTHON_API_BASE_URL=https://hirescript-api-python.onrender.com \
-PYTHON_API_INTERNAL_SECRET=replace-with-python-internal-secret \
-./mvnw spring-boot:run
-```
-
-Run frontend in another terminal:
+Run the frontend with the Java backend URL:
 
 ```bash
 HIRESCRIPT_API_BASE_URL=http://localhost:9097 bun run dev

@@ -1,19 +1,5 @@
 services:
   - type: web
-    name: hirescript-java-api
-    runtime: docker
-    plan: free
-    rootDir: backend-java
-    dockerfilePath: ./Dockerfile
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: ai
-      - key: PYTHON_API_BASE_URL
-        value: https://hirescript-api-python.onrender.com
-      - key: PYTHON_API_INTERNAL_SECRET
-        sync: false
-
-  - type: web
     name: hirescript-frontend
     runtime: node
     plan: free
@@ -21,6 +7,6 @@ services:
     startCommand: npm run start
     envVars:
       - key: HIRESCRIPT_API_BASE_URL
-        value: https://hirescript-java-api.onrender.com
+        sync: false
       - key: HIRESCRIPT_API_TIMEOUT_MS
         value: "30000"
