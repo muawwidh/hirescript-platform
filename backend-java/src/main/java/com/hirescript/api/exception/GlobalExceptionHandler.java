@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AiGenerationException.class)
     public ProblemDetail handleAiGenerationError(AiGenerationException ex) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_GATEWAY);
-        problem.setDetail("AI generation service is unavailable. Please try again.");
+        problem.setDetail(ex.getMessage());
         return problem;
     }
 

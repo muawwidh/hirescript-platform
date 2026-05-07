@@ -5,6 +5,7 @@ import com.hirescript.api.dto.response.PythonJDResponse;
 import com.hirescript.api.exception.AiGenerationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -45,6 +46,12 @@ public class PythonApiAiClient implements AiClient {
                     .header(INTERNAL_SECRET_HEADER, internalSecret)
                     .body(request)
                     .retrieve()
+                    .onStatus(HttpStatusCode::isError, (req, res) -> {
+                        String body = new String(res.getBody().readAllBytes());
+                        throw new AiGenerationException(
+                                "AI generation service returned " + res.getStatusCode() + ": " + body
+                        );
+                    })
                     .body(PythonJDResponse.class);
         } catch (RestClientException ex) {
             throw new AiGenerationException("AI generation service is unavailable. Please try again.", ex);
