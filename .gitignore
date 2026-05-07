@@ -16,16 +16,6 @@ dist-ssr
 .nitro
 *.local
 
-# Java backend
-backend-java/target/
-backend-java/.env
-backend-java/.env.*
-backend-java/*.env
-backend-java/application-local.properties
-backend-java/application-dev.properties
-backend-java/application-secrets.properties
-backend-java/application-prod.properties
-
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
